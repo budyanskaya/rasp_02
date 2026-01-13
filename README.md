@@ -35,5 +35,40 @@ sudo apt install nginx
 ```
 sudo nano /etc/nginx/sites-available/taskmanager.conf
 ```
-
+Вставляем туда следующее:
+```
+server {
+    listen 80;
+    server_name localhost;
+    
+    location / {
+        proxy_pass http://127.0.0.1:5000;
+        
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+```
+Активируем конфигурацию
+```
+sudo ln -s /etc/nginx/sites-available/taskmanager.conf /etc/nginx/sites-enabled/
+```
+Отключаем дефолтную конфигурацию
+```
+sudo rm /etc/nginx/sites-enabled/default
+```
+Проверяем конфигурацию
+```
+sudo nginx -t
+```
+Перезапускаем Nginx
+```
+sudo systemctl restart nginx
+```
+Проверяем статус
+```
+sudo systemctl status nginx
+```
 
