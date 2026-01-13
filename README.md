@@ -31,5 +31,9 @@ pip install python-dotenv
 sudo apt update
 sudo apt install nginx
 ```
+### Создаем конфигурацию для нашего приложения
+```
+sudo nano /etc/nginx/sites-available/taskmanager.conf
+```
 
 
