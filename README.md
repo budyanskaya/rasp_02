@@ -51,6 +51,8 @@ server {
     }
 }
 ```
+<img width="482" height="411" alt="image" src="https://github.com/user-attachments/assets/028d7580-fd85-407f-8185-c1b3e683c2c6" />
+
 Активируем конфигурацию
 ```
 sudo ln -s /etc/nginx/sites-available/taskmanager.conf /etc/nginx/sites-enabled/
