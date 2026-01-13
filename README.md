@@ -75,4 +75,11 @@ sudo systemctl restart nginx
 ```
 sudo systemctl status nginx
 ```
+<img width="632" height="353" alt="image" src="https://github.com/user-attachments/assets/37ddc433-fa7a-4120-afa5-fc7b97abdd8e" />
 
+### Настройка хоста (для локального тестирования)
+Для этого выполняем следующую команду
+```
+sudo nano /etc/hosts
+```
+И добавляем строку: 127.0.0.1 taskmanager.local
