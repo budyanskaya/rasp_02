@@ -65,6 +65,8 @@ sudo rm /etc/nginx/sites-enabled/default
 ```
 sudo nginx -t
 ```
+<img width="467" height="88" alt="image" src="https://github.com/user-attachments/assets/52581d95-4e46-44c4-b22b-b4384d47d022" />
+
 Перезапускаем Nginx
 ```
 sudo systemctl restart nginx
