@@ -95,3 +95,31 @@ pip install gunicorn
 ```
 gunicorn -w 4 -b 127.0.0.1:5000 "app:app"
 ```
+###  Настройка systemd службы (для автозапуска)
+```
+sudo nano /etc/systemd/system/taskmanager.service
+```
+Добавить содержимое:
+```
+[Unit]
+Description=Task Manager Flask Application
+After=network.target
+
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/path/to/task-manager
+Environment="PATH=/path/to/task-manager/venv/bin"
+ExecStart=/path/to/task-manager/venv/bin/gunicorn -w 4 -b 127.0.0.1:5000 "app:app"
+
+
+[Install]
+WantedBy=multi-user.target
+```
+Активировать службу
+```
+sudo systemctl daemon-reload
+sudo systemctl start taskmanager
+sudo systemctl enable taskmanager
+```
