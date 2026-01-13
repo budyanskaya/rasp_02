@@ -132,23 +132,65 @@ sudo apt install jq
 ```
 curl -s http://localhost:5000/api/health | jq .
 ```
+<img width="617" height="137" alt="image" src="https://github.com/user-attachments/assets/89a68e90-1a93-46ea-be78-2b48cf404a98" />
+
 Все задачи
 ```
 curl -s http://localhost:5000/api/tasks | jq '.data[]'
 ```
+<img width="622" height="340" alt="image" src="https://github.com/user-attachments/assets/d01836d9-234b-44ca-bb7d-134a05c94305" />
+
 Создать задачу
 ```
 curl -s -X POST http://localhost:5000/api/tasks \
   -H "Content-Type: application/json" \
   -d '{"title": "Новая задача"}' | jq .
 ```
+<img width="622" height="292" alt="image" src="https://github.com/user-attachments/assets/841fe2a5-9cef-442e-b7fe-7901b02214e4" />
+
 Обновить
 ```
 curl -s -X PUT http://localhost:5000/api/tasks/1 \
   -H "Content-Type: application/json" \
   -d '{"title": "Новое", "status": "done"}' | jq .
 ```
+<img width="620" height="287" alt="image" src="https://github.com/user-attachments/assets/794da90e-7b39-4192-b5a6-80e9485ce427" />
+
 Удалить
 ```
 curl -s -X DELETE http://localhost:5000/api/tasks/1 -w "Статус: %{http_code}\n"
 ```
+<img width="618" height="53" alt="image" src="https://github.com/user-attachments/assets/5587c6df-776b-486c-b27f-d6c7e9018eda" />
+
+## Идемпотентность методов
+### Идемпотентные методы:
+* GET - всегда идемпотентен (чтение не меняет состояние)
+* PUT - идемпотентен (полная замена, многократный вызов дает тот же результат)
+* DELETE - идемпотентен (после первого удаления, ресурс удален, последующие вызовы также возвращают успех)
+### Неидемпотентные методы:
+* POST - создает новый ресурс, каждый вызов создает новый объект
+* PATCH - частичное обновление, может быть неидемпотентным если логика обновления зависит от текущего состояния
+
+## Преимущества использования Nginx
+### Производительность:
+* Статический контент отдается напрямую, без Flask
+* Кэширование на уровне Nginx
+* Gzip сжатие
+* Keep-alive соединения
+
+### Безопасность:
+* Защита от DDoS (rate limiting)
+* Скрытие внутренней структуры
+* SSL/TLS termination
+* Заголовки безопасности
+
+### Гибкость:
+* Перезапись URL
+* A/B тестирование
+* Географическая маршрутизация
+* Различные стратегии балансировки
+
+### Масштабируемость:
+* Легко добавить новые бэкенды
+* Поддержка горизонтального масштабирования
+* Кэширование ответов API
