@@ -85,3 +85,13 @@ sudo nano /etc/hosts
 И добавляем строку: 127.0.0.1 taskmanager.local
 
 <img width="648" height="217" alt="image" src="https://github.com/user-attachments/assets/29911a47-1f79-43dc-acd8-093e6ba33ce2" />
+
+### Запуск приложения через Gunicorn (production)
+Установка Gunicorn
+```
+pip install gunicorn
+```
+Запуск приложения через Gunicorn
+```
+gunicorn -w 4 -b 127.0.0.1:5000 "app:app"
+```
