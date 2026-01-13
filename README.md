@@ -25,3 +25,11 @@ pip install flask
 pip install gunicorn
 pip install python-dotenv
 ```
+### Установка и настройка Nginx
+Переходим к установке Nginx
+```
+sudo apt update
+sudo apt install nginx
+```
+
+
