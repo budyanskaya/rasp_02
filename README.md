@@ -83,3 +83,5 @@ sudo systemctl status nginx
 sudo nano /etc/hosts
 ```
 И добавляем строку: 127.0.0.1 taskmanager.local
+
+<img width="648" height="217" alt="image" src="https://github.com/user-attachments/assets/29911a47-1f79-43dc-acd8-093e6ba33ce2" />
