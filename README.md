@@ -123,3 +123,32 @@ sudo systemctl daemon-reload
 sudo systemctl start taskmanager
 sudo systemctl enable taskmanager
 ```
+### Проверка
+Сначала установите jq
+```
+sudo apt install jq
+```
+Проверка здоровья
+```
+curl -s http://localhost:5000/api/health | jq .
+```
+Все задачи
+```
+curl -s http://localhost:5000/api/tasks | jq '.data[]'
+```
+Создать задачу
+```
+curl -s -X POST http://localhost:5000/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Новая задача"}' | jq .
+```
+Обновить
+```
+curl -s -X PUT http://localhost:5000/api/tasks/1 \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Новое", "status": "done"}' | jq .
+```
+Удалить
+```
+curl -s -X DELETE http://localhost:5000/api/tasks/1 -w "Статус: %{http_code}\n"
+```
