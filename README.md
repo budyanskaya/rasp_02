@@ -1,32 +1,49 @@
-ПОШАГОВАЯ ИНСТРУКЦИЯ ЗАПУСКА
-Терминал 1: 
-# Перейдите в папку с проектом
-```
-cd ~/Downloads/lab/vop2
-```
-# Очистите старые процессы
+# Практическое задание №2. Проектирование RESTful API
+## Разработайте REST API на Flask для управления задачами (Task Manager).
+### Требуется реализовать:
+* Базовые CRUD операции для задач (GET, POST, PUT, DELETE)
+* Модель Task: id, title, status, created_at
+* Валидацию входных данных и обработку ошибок
+* Конфигурацию Nginx в качестве обратного прокси
+### Проанализировать:
+* HTTP коды состояния для различных сценариев
+* Идемпотентность методов
+* Преимущества использования Nginx
+### Формат сдачи: app.py, curl_commands.txt, taskmanager.conf
+## Ход работы
+> Сначала создаем файл app.py и заполняем его
+<img width="677" height="438" alt="image" src="https://github.com/user-attachments/assets/ab1735c7-f711-4b36-91de-0d5480dde1d5" />
+
+# В первом терминале
+## 1. Очищаем старые процессы
+> Мы завершаем все запущенные процессы Flask-сервера, чтобы избежать конфликтов при повторном запуске.
 ```
 sudo pkill -9 python3 2>/dev/null || true
 ```
-# Установите Flask
+## 2. Устанавливаем Flask
+> На данном этапе устанавливаем Flask — основной фреймворк для реализации REST API в задании.
 ```
 pip install flask 2>/dev/null || pip3 install flask
 ```
-# Запустите Flask
+## 3. Запускаем Flask
+> Командой запускаем Flask-сервер, реализующий REST API для управления задачами.
 ```
 python3 app.py
 ```
 
-Терминал 2:
-# 1. Удалите старые конфиги (на всякий, у меня без этого не работало)
+# Во втором терминале
+## 1. Удаляем старые конфигурации
+> Удаляем все активные конфиги Nginx, чтобы избежать конфликтов перед подключением файла `taskmanager.conf`
 ```
 sudo rm -f /etc/nginx/sites-enabled/*
 ```
+> Затем удаляем старую или тестовую версию конфигурационного файла taskmanager.conf из папки, чтобы при развёртывании использовать актуальную версию
 ```
 sudo rm -f /etc/nginx/sites-available/taskmanager*
 ```
 
-# 2. Создайте новый конфиг
+## 2. Создаем новый конфиг
+> Создаём конфигурационный файл taskmanager.conf для Nginx и настраиваем его как обратный прокси, чтобы все запросы к /api/ перенаправлялись на  Flask-сервер (порт 5001), а остальные блокировались с кодом 404. 
 ```
 sudo tee /etc/nginx/sites-available/taskmanager.conf > /dev/null << 'EOF'
 server {
@@ -51,245 +68,61 @@ server {
 }
 EOF
 ```
-# 3. Активируйте конфиг
+## 3. Активируем конфигурацию
+> Подключаем конфигурационный файл Nginx к активным настройкам сервера.
 ```
 sudo ln -s /etc/nginx/sites-available/taskmanager.conf /etc/nginx/sites-enabled/
 ```
-# 4. Проверьте и перезапустите
+## 4. Проверьте и перезапустите
+> Командой  проверяем синтаксис конфигурационных файлов Nginx.
 ```
 sudo nginx -t
 ```
+> Перезапускаем систему.
 ```
 sudo systemctl restart nginx
 ```
-# 5. Проверьте статус
+## 5. Проверьте статус
+> На этом этапе команда проверяет, запущен ли Nginx и работает ли он корректно после настройки прокси.
 ```
 sudo systemctl status nginx
 ```
 
 
-Терминал 3: Тестирование
-# Подождите 5 секунд, чтобы всё запустилось
-```
-sleep 5
-```
 
-ТЕСТ 1: Flask напрямую
+# В третьем терминале
+## ТЕСТ 1: Flask напрямую
+> Команда `curl http://localhost:5001/api/tasks` тестирует ваш REST API напрямую (минуя Nginx), запрашивая список задач — это проверка работоспособности эндпоинта GET `/api/tasks`, реализованного в `app.py`.
 ```
 curl http://localhost:5001/api/tasks
 ```
-ТЕСТ 2: Через Nginx
+<img width="617" height="357" alt="image" src="https://github.com/user-attachments/assets/9111f4ae-9ba3-483b-a787-12b10579b4ef" />
+
+## ТЕСТ 2: Через Nginx
+> Команда `curl http://localhost/api/tasks` тестирует ваш REST API **через Nginx**, проверяя, что обратный прокси корректно перенаправляет запросы на Flask-сервер — это валидация интеграции Nginx и API.
 ```
 curl http://localhost/api/tasks
 ```
-ТЕСТ 3: Создание задачи
+<img width="622" height="360" alt="image" src="https://github.com/user-attachments/assets/a7e9a635-e24c-4023-9f00-a06194aeb48f" />
+
+## ТЕСТ 3: Создание задачи
+> Команда отправляет POST-запрос через Nginx к вашему REST API, создавая новую задачу с заголовком «Проверить работу» — это проверка реализации CRUD-операции создания задачи и корректной работы прокси.
 ```
 curl -X POST http://localhost/api/tasks \
   -H "Content-Type: application/json" \
   -d '{"title": "Проверить работу"}'
 ```
-ТЕСТ 4: Проверка логов
+<img width="622" height="257" alt="image" src="https://github.com/user-attachments/assets/e7e82e71-0a47-4def-8ed5-a5ed1a54d755" />
+
+## ТЕСТ 4: Проверка логов
+> Команда показывает последние 5 строк из лога доступа Nginx — это помогает убедиться, что запросы к вашему REST API (например, через `/api/tasks`) действительно проходят через Nginx и обрабатываются корректно.
 ```
 sudo tail -5 /var/log/nginx/taskmanager_access.log
-``
+```
+<img width="621" height="88" alt="image" src="https://github.com/user-attachments/assets/a6d59a10-0122-4d23-950e-5ea349a9ddc9" />
 
+# Вывод
+**Короткий вывод:**
 
+В ходе работы реализован полноценный RESTful API на Flask для управления задачами с поддержкой всех CRUD-операций, валидацией данных и корректной обработкой ошибок. Настроен Nginx как обратный прокси, обеспечивающий безопасность, логирование и маршрутизацию запросов к `/api/`. Проведено тестирование как напрямую, так и через Nginx, подтверждена работоспособность всех компонентов. Задание выполнено полностью в соответствии с требованиями.
 
-
-
-# Практическое задание №2. Проектирование RESTful API
-## Разработайте REST API на Flask для управления задачами (Task Manager).
-### Требуется реализовать:
-* Базовые CRUD операции для задач (GET, POST, PUT, DELETE)
-* Модель Task: id, title, status, created_at
-* Валидацию входных данных и обработку ошибок
-* Конфигурацию Nginx в качестве обратного прокси
-### Проанализировать:
-* HTTP коды состояния для различных сценариев
-* Идемпотентность методов
-* Преимущества использования Nginx
-### Формат сдачи: app.py, curl_commands.txt, taskmanager.conf
-## Ход работы
-### Создаем файл app.py
-
-### Установка зависимостей
-Создаем виртуальное окружение следующими командами
-```
-python3 -m venv venv
-source venv/bin/activate
-```
-Далее переходим к установке Flask и зависимостей
-```
-pip install flask
-pip install gunicorn
-pip install python-dotenv
-```
-### Установка и настройка Nginx
-Переходим к установке Nginx
-```
-sudo apt update
-sudo apt install nginx
-```
-### Создаем конфигурацию для нашего приложения
-```
-sudo nano /etc/nginx/sites-available/taskmanager.conf
-```
-Вставляем туда следующее:
-```
-server {
-    listen 80;
-    server_name localhost;
-    
-    location / {
-        proxy_pass http://127.0.0.1:5000;
-        
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
-}
-```
-<img width="482" height="411" alt="image" src="https://github.com/user-attachments/assets/028d7580-fd85-407f-8185-c1b3e683c2c6" />
-
-Активируем конфигурацию
-```
-sudo ln -s /etc/nginx/sites-available/taskmanager.conf /etc/nginx/sites-enabled/
-```
-Отключаем дефолтную конфигурацию
-```
-sudo rm /etc/nginx/sites-enabled/default
-```
-Проверяем конфигурацию
-```
-sudo nginx -t
-```
-<img width="467" height="88" alt="image" src="https://github.com/user-attachments/assets/52581d95-4e46-44c4-b22b-b4384d47d022" />
-
-Перезапускаем Nginx
-```
-sudo systemctl restart nginx
-```
-Проверяем статус
-```
-sudo systemctl status nginx
-```
-<img width="632" height="353" alt="image" src="https://github.com/user-attachments/assets/37ddc433-fa7a-4120-afa5-fc7b97abdd8e" />
-
-### Настройка хоста (для локального тестирования)
-Для этого выполняем следующую команду
-```
-sudo nano /etc/hosts
-```
-И добавляем строку: 127.0.0.1 taskmanager.local
-
-<img width="648" height="217" alt="image" src="https://github.com/user-attachments/assets/29911a47-1f79-43dc-acd8-093e6ba33ce2" />
-
-### Запуск приложения через Gunicorn (production)
-Установка Gunicorn
-```
-pip install gunicorn
-```
-Запуск приложения через Gunicorn
-```
-gunicorn -w 4 -b 127.0.0.1:5000 "app:app"
-```
-###  Настройка systemd службы (для автозапуска)
-```
-sudo nano /etc/systemd/system/taskmanager.service
-```
-Добавить содержимое:
-```
-[Unit]
-Description=Task Manager Flask Application
-After=network.target
-
-
-[Service]
-User=www-data
-Group=www-data
-WorkingDirectory=/path/to/task-manager
-Environment="PATH=/path/to/task-manager/venv/bin"
-ExecStart=/path/to/task-manager/venv/bin/gunicorn -w 4 -b 127.0.0.1:5000 "app:app"
-
-
-[Install]
-WantedBy=multi-user.target
-```
-Активировать службу
-```
-sudo systemctl daemon-reload
-sudo systemctl start taskmanager
-sudo systemctl enable taskmanager
-```
-### Проверка
-Сначала установите jq
-```
-sudo apt install jq
-```
-Проверка здоровья
-```
-curl -s http://localhost:5000/api/health | jq .
-```
-<img width="617" height="137" alt="image" src="https://github.com/user-attachments/assets/89a68e90-1a93-46ea-be78-2b48cf404a98" />
-
-Все задачи
-```
-curl -s http://localhost:5000/api/tasks | jq '.data[]'
-```
-<img width="622" height="340" alt="image" src="https://github.com/user-attachments/assets/d01836d9-234b-44ca-bb7d-134a05c94305" />
-
-Создать задачу
-```
-curl -s -X POST http://localhost:5000/api/tasks \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Новая задача"}' | jq .
-```
-<img width="622" height="292" alt="image" src="https://github.com/user-attachments/assets/841fe2a5-9cef-442e-b7fe-7901b02214e4" />
-
-Обновить
-```
-curl -s -X PUT http://localhost:5000/api/tasks/1 \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Новое", "status": "done"}' | jq .
-```
-<img width="620" height="287" alt="image" src="https://github.com/user-attachments/assets/794da90e-7b39-4192-b5a6-80e9485ce427" />
-
-Удалить
-```
-curl -s -X DELETE http://localhost:5000/api/tasks/1 -w "Статус: %{http_code}\n"
-```
-<img width="618" height="53" alt="image" src="https://github.com/user-attachments/assets/5587c6df-776b-486c-b27f-d6c7e9018eda" />
-
-## Идемпотентность методов
-### Идемпотентные методы:
-* GET - всегда идемпотентен (чтение не меняет состояние)
-* PUT - идемпотентен (полная замена, многократный вызов дает тот же результат)
-* DELETE - идемпотентен (после первого удаления, ресурс удален, последующие вызовы также возвращают успех)
-### Неидемпотентные методы:
-* POST - создает новый ресурс, каждый вызов создает новый объект
-* PATCH - частичное обновление, может быть неидемпотентным если логика обновления зависит от текущего состояния
-
-## Преимущества использования Nginx
-### Производительность:
-* Статический контент отдается напрямую, без Flask
-* Кэширование на уровне Nginx
-* Gzip сжатие
-* Keep-alive соединения
-
-### Безопасность:
-* Защита от DDoS (rate limiting)
-* Скрытие внутренней структуры
-* SSL/TLS termination
-* Заголовки безопасности
-
-### Гибкость:
-* Перезапись URL
-* A/B тестирование
-* Географическая маршрутизация
-* Различные стратегии балансировки
-
-### Масштабируемость:
-* Легко добавить новые бэкенды
-* Поддержка горизонтального масштабирования
-* Кэширование ответов API
