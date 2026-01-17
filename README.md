@@ -1,3 +1,102 @@
+ПОШАГОВАЯ ИНСТРУКЦИЯ ЗАПУСКА
+Терминал 1: 
+# Перейдите в папку с проектом
+```
+cd ~/Downloads/lab/vop2
+```
+# Очистите старые процессы
+```
+sudo pkill -9 python3 2>/dev/null || true
+```
+# Установите Flask
+```
+pip install flask 2>/dev/null || pip3 install flask
+```
+# Запустите Flask
+```
+python3 app.py
+```
+
+Терминал 2:
+# 1. Удалите старые конфиги (на всякий, у меня без этого не работало)
+```
+sudo rm -f /etc/nginx/sites-enabled/*
+```
+```
+sudo rm -f /etc/nginx/sites-available/taskmanager*
+```
+
+# 2. Создайте новый конфиг
+```
+sudo tee /etc/nginx/sites-available/taskmanager.conf > /dev/null << 'EOF'
+server {
+    listen 80;
+    server_name localhost;
+    
+    access_log /var/log/nginx/taskmanager_access.log;
+    error_log /var/log/nginx/taskmanager_error.log;
+    
+    location /api/ {
+        proxy_pass http://127.0.0.1:5001;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_redirect off;
+    }
+    
+    location / {
+        return 404;
+    }
+}
+EOF
+```
+# 3. Активируйте конфиг
+```
+sudo ln -s /etc/nginx/sites-available/taskmanager.conf /etc/nginx/sites-enabled/
+```
+# 4. Проверьте и перезапустите
+```
+sudo nginx -t
+```
+```
+sudo systemctl restart nginx
+```
+# 5. Проверьте статус
+```
+sudo systemctl status nginx
+```
+
+
+Терминал 3: Тестирование
+# Подождите 5 секунд, чтобы всё запустилось
+```
+sleep 5
+```
+
+ТЕСТ 1: Flask напрямую
+```
+curl http://localhost:5001/api/tasks
+```
+ТЕСТ 2: Через Nginx
+```
+curl http://localhost/api/tasks
+```
+ТЕСТ 3: Создание задачи
+```
+curl -X POST http://localhost/api/tasks \
+  -H "Content-Type: application/json" \
+  -d '{"title": "Проверить работу"}'
+```
+ТЕСТ 4: Проверка логов
+```
+sudo tail -5 /var/log/nginx/taskmanager_access.log
+``
+
+
+
+
+
 # Практическое задание №2. Проектирование RESTful API
 ## Разработайте REST API на Flask для управления задачами (Task Manager).
 ### Требуется реализовать:
