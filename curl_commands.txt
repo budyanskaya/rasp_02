@@ -1,6 +1,5 @@
 # === Тестирование Flask напрямую ===
 
-
 # 1. Получение всех задач (Flask)
 curl -X GET http://localhost:5001/api/tasks
 
