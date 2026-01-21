@@ -3,10 +3,10 @@ from datetime import datetime
 app = Flask(__name__)
 # База данных в памяти
 tasks = [
-    {"id": 1, "title": "Изучить gRPC", "status": "pending", 
-     "created_at": "2025-12-01T10:00:00"},
-    {"id": 2, "title": "Настроить Nginx", "status": "done", 
-     "created_at": "2025-12-01T09:00:00"}
+    {"id": 1, "title": "Разработать REST API", "status": "pending", 
+     "created_at": "2026-01-15T14:30:00"},
+    {"id": 2, "title": "Протестировать эндпоинты", "status": "done", 
+     "created_at": "2026-01-16T11:20:00"}
 ]
 next_id = 3
 
