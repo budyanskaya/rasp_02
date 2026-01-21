@@ -1,7 +1,3 @@
-```
-XKBLAYOUT="us,ru"
-XKBOPTIONS="grp:alt_shift_toggle"  # или grp:lalt_toggle
-```
 # Практическое задание №2. Проектирование RESTful API
 ## Разработайте REST API на Flask для управления задачами (Task Manager).
 ### Требуется реализовать:
@@ -92,6 +88,7 @@ sudo systemctl restart nginx
 ```
 sudo systemctl status nginx
 ```
+<img width="1240" height="817" alt="image" src="https://github.com/user-attachments/assets/0f1f2ec9-3ded-4a11-af90-158f3039d5a0" />
 
 
 
@@ -101,14 +98,14 @@ sudo systemctl status nginx
 ```
 curl http://localhost:5001/api/tasks
 ```
-<img width="617" height="357" alt="image" src="https://github.com/user-attachments/assets/9111f4ae-9ba3-483b-a787-12b10579b4ef" />
+<img width="802" height="411" alt="image" src="https://github.com/user-attachments/assets/22788a51-07c0-4310-89ff-70a81669d322" />
 
 ## ТЕСТ 2: Через Nginx
 > Команда `curl http://localhost/api/tasks` тестирует ваш REST API **через Nginx**, проверяя, что обратный прокси корректно перенаправляет запросы на Flask-сервер — это валидация интеграции Nginx и API.
 ```
 curl http://localhost/api/tasks
 ```
-<img width="622" height="360" alt="image" src="https://github.com/user-attachments/assets/a7e9a635-e24c-4023-9f00-a06194aeb48f" />
+<img width="731" height="407" alt="image" src="https://github.com/user-attachments/assets/6e113a57-41b3-4d84-85d8-6c84230aa8c8" />
 
 ## ТЕСТ 3: Создание задачи
 > Команда отправляет POST-запрос через Nginx к вашему REST API, создавая новую задачу с заголовком «Проверить работу» — это проверка реализации CRUD-операции создания задачи и корректной работы прокси.
@@ -117,14 +114,14 @@ curl -X POST http://localhost/api/tasks \
   -H "Content-Type: application/json" \
   -d '{"title": "Проверить работу"}'
 ```
-<img width="622" height="257" alt="image" src="https://github.com/user-attachments/assets/e7e82e71-0a47-4def-8ed5-a5ed1a54d755" />
+<img width="560" height="152" alt="image" src="https://github.com/user-attachments/assets/726c7846-2eeb-4593-9fea-1f92520b45aa" />
 
 ## ТЕСТ 4: Проверка логов
 > Команда показывает последние 5 строк из лога доступа Nginx — это помогает убедиться, что запросы к вашему REST API (например, через `/api/tasks`) действительно проходят через Nginx и обрабатываются корректно.
 ```
 sudo tail -5 /var/log/nginx/taskmanager_access.log
 ```
-<img width="621" height="88" alt="image" src="https://github.com/user-attachments/assets/a6d59a10-0122-4d23-950e-5ea349a9ddc9" />
+<img width="815" height="105" alt="image" src="https://github.com/user-attachments/assets/f66e9d72-d0dd-45a2-8e44-dc972c93ee73" />
 
 # Вывод
 В ходе работы реализован полноценный RESTful API на Flask для управления задачами с поддержкой всех CRUD-операций, валидацией данных и корректной обработкой ошибок. Настроен Nginx как обратный прокси, обеспечивающий безопасность, логирование и маршрутизацию запросов к `/api/`. Проведено тестирование как напрямую, так и через Nginx, подтверждена работоспособность всех компонентов. Задание выполнено полностью в соответствии с требованиями.
