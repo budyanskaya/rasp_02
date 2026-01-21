@@ -1,3 +1,7 @@
+```
+XKBLAYOUT="us,ru"
+XKBOPTIONS="grp:alt_shift_toggle"  # или grp:lalt_toggle
+```
 # Практическое задание №2. Проектирование RESTful API
 ## Разработайте REST API на Flask для управления задачами (Task Manager).
 ### Требуется реализовать:
@@ -30,6 +34,7 @@ pip install flask 2>/dev/null || pip3 install flask
 ```
 python3 app.py
 ```
+<img width="1176" height="761" alt="image" src="https://github.com/user-attachments/assets/21d511cf-ac07-4687-8dd2-9d4dab19d5d8" />
 
 # Во втором терминале
 ## 1. Удаляем старые конфигурации
