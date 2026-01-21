@@ -11,7 +11,7 @@
 * Преимущества использования Nginx
 ### Формат сдачи: app.py, curl_commands.txt, taskmanager.conf
 ## Ход работы
-> Сначала создаем файл app.py и заполняем его
+## 1. Сначала создаем файл app.py и заполняем его
 <img width="677" height="438" alt="image" src="https://github.com/user-attachments/assets/ab1735c7-f711-4b36-91de-0d5480dde1d5" />
 
 # В первом терминале
