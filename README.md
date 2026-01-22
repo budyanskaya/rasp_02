@@ -94,21 +94,20 @@ sudo systemctl status nginx
 
 # В третьем терминале
 ## ТЕСТ 1: Flask напрямую
-> Команда `curl http://localhost:5001/api/tasks` тестирует ваш REST API напрямую (минуя Nginx), запрашивая список задач — это проверка работоспособности эндпоинта GET `/api/tasks`, реализованного в `app.py`.
-```
+> Команда тестирует  REST API напрямую (минуя Nginx), запрашивая список задач
 curl http://localhost:5001/api/tasks
 ```
 <img width="802" height="411" alt="image" src="https://github.com/user-attachments/assets/22788a51-07c0-4310-89ff-70a81669d322" />
 
 ## ТЕСТ 2: Через Nginx
-> Команда `curl http://localhost/api/tasks` тестирует ваш REST API **через Nginx**, проверяя, что обратный прокси корректно перенаправляет запросы на Flask-сервер — это валидация интеграции Nginx и API.
+> Команда тестирует  REST API **через Nginx**, проверяя, что обратный прокси корректно перенаправляет запросы на Flask-сервер 
 ```
 curl http://localhost/api/tasks
 ```
 <img width="731" height="407" alt="image" src="https://github.com/user-attachments/assets/6e113a57-41b3-4d84-85d8-6c84230aa8c8" />
 
 ## ТЕСТ 3: Создание задачи
-> Команда отправляет POST-запрос через Nginx к вашему REST API, создавая новую задачу с заголовком «Проверить работу» — это проверка реализации CRUD-операции создания задачи и корректной работы прокси.
+> Команда отправляет POST-запрос через Nginx к  REST API, создавая новую задачу с заголовком «Проверить работу», это проверка реализации CRUD-операции 
 ```
 curl -X POST http://localhost/api/tasks \
   -H "Content-Type: application/json" \
@@ -117,7 +116,7 @@ curl -X POST http://localhost/api/tasks \
 <img width="560" height="152" alt="image" src="https://github.com/user-attachments/assets/726c7846-2eeb-4593-9fea-1f92520b45aa" />
 
 ## ТЕСТ 4: Проверка логов
-> Команда показывает последние 5 строк из лога доступа Nginx — это помогает убедиться, что запросы к вашему REST API (например, через `/api/tasks`) действительно проходят через Nginx и обрабатываются корректно.
+> Команда показывает последние 5 строк из лога доступа Nginx — это помогает убедиться, что запросы к  REST API действительно проходят через Nginx и обрабатываются корректно.
 ```
 sudo tail -5 /var/log/nginx/taskmanager_access.log
 ```
