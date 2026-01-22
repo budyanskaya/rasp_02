@@ -95,6 +95,7 @@ sudo systemctl status nginx
 # В третьем терминале
 ## ТЕСТ 1: Flask напрямую
 > Команда тестирует  REST API напрямую (минуя Nginx), запрашивая список задач
+```
 curl http://localhost:5001/api/tasks
 ```
 <img width="802" height="411" alt="image" src="https://github.com/user-attachments/assets/22788a51-07c0-4310-89ff-70a81669d322" />
